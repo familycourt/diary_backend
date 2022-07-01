@@ -1,12 +1,52 @@
+import uuid
 from rest_framework import serializers
 from rest_framework import fields
-from rest_framework.fields import (BooleanField, CharField,
+from rest_framework.fields import (BooleanField,
+                                   CharField,
                                    IntegerField,
                                    FloatField,
                                    DateField,
-                                   SerializerMethodField,
-                                   )
+                                   SerializerMethodField,)
 from rest_framework.relations import StringRelatedField
 from rest_framework.serializers import PrimaryKeyRelatedField
 
 from .models import Diary, Question, Answer, Comment
+
+
+class DiaryWriteSerializer(serializers.Serializer):
+
+    def create(self, validated_data):
+        diary = Diary.objects.create(
+            admin=self.context['request'].user,
+            code=str(uuid.uuid4())
+        )
+        diary.users.add(self.context['request'].user)
+        return diary
+
+
+class DiarySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Diary
+        fields = '__all__'
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Question
+        fields = '__all__'
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer
+        fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
