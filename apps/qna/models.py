@@ -13,7 +13,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     diary = models.ForeignKey('diary.Diary', on_delete=models.CASCADE)
     content = models.CharField(max_length=512)
-    year = models.IntegerField(null=True, blank=True)
+    year = models.IntegerField()
 
 
 class Comment(models.Model):
