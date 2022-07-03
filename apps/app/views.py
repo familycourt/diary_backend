@@ -41,8 +41,10 @@ class QuestionRetrieveAPIView(APIView):
         return Response(serializer.data)
 
 
-class AnswerListAPIView(APIView):
-    def get(self, request):
+class AnswerAPIView(ListCreateAPIView):
+    serializer_class = AnswerSerializer
+
+    def list(self, request, *args, **kwargs):
         question = get_question_object(request.query_params.get('date'))
         try:
             year = int(request.query_params['year'])
@@ -54,4 +56,5 @@ class AnswerListAPIView(APIView):
         queryset = Answer.objects.filter(
             user=request.user, question=question, diary_id=diary, year=year)
         serializer = AnswerListSerializer(queryset, many=True)
+        print(queryset)
         return Response(serializer.data)

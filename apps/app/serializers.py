@@ -1,5 +1,5 @@
 import uuid
-from rest_framework.serializers import Serializer, ModelSerializer
+from rest_framework.serializers import Serializer, ModelSerializer, ValidationError
 from rest_framework import fields
 from rest_framework.fields import (BooleanField,
                                    CharField,
@@ -42,7 +42,20 @@ class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = '__all__'
+        exclude = ['user', ]
+
+    def create(self, validated_data):
+        return Answer.objects.create(user=self.context['request'].user, **validated_data)
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if attrs['diary'] not in user.diaries.all():
+            raise ValidationError(
+                'This user is not allowed to write in this diary')
+        if Answer.objects.filter(user=user, **attrs).first():
+            raise ValidationError(
+                'This user already answered to this question')
+        return super().validate(attrs)
 
 
 class AnswerListSerializer(Serializer):
