@@ -1,5 +1,5 @@
 import uuid
-from rest_framework import serializers
+from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import fields
 from rest_framework.fields import (BooleanField,
                                    CharField,
@@ -13,7 +13,7 @@ from rest_framework.serializers import PrimaryKeyRelatedField
 from .models import Diary, Question, Answer, Comment
 
 
-class DiaryWriteSerializer(serializers.Serializer):
+class DiaryWriteSerializer(Serializer):
 
     def create(self, validated_data):
         diary = Diary.objects.create(
@@ -24,28 +24,35 @@ class DiaryWriteSerializer(serializers.Serializer):
         return diary
 
 
-class DiarySerializer(serializers.ModelSerializer):
+class DiarySerializer(ModelSerializer):
 
     class Meta:
         model = Diary
         fields = '__all__'
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionSerializer(ModelSerializer):
 
     class Meta:
         model = Question
         fields = '__all__'
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
         fields = '__all__'
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class AnswerListSerializer(Serializer):
+    user = CharField(source='user.username')
+    question = CharField(source='question.content')
+    content = CharField()
+    year = IntegerField()
+
+
+class CommentSerializer(ModelSerializer):
 
     class Meta:
         model = Comment

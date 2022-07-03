@@ -7,7 +7,12 @@ from rest_framework.generics import (CreateAPIView,
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
-from .serializers import AnswerSerializer, DiarySerializer, DiaryWriteSerializer, QuestionSerializer
+from .serializers import (
+    AnswerSerializer,
+    AnswerListSerializer,
+    DiarySerializer,
+    DiaryWriteSerializer,
+    QuestionSerializer)
 from .models import Diary, Question, Answer, Comment
 
 
@@ -33,4 +38,20 @@ class QuestionRetrieveAPIView(APIView):
     def get(self, request):
         question = get_question_object(request.query_params.get('date'))
         serializer = QuestionSerializer(question)
+        return Response(serializer.data)
+
+
+class AnswerListAPIView(APIView):
+    def get(self, request):
+        question = get_question_object(request.query_params.get('date'))
+        try:
+            year = int(request.query_params['year'])
+            diary = int(request.query_params['diary'])
+        except KeyError:
+            raise ParseError('Year, Diary id not given')
+        except ValueError:
+            raise ParseError('Year and Diary id should be in decimal format')
+        queryset = Answer.objects.filter(
+            user=request.user, question=question, diary_id=diary, year=year)
+        serializer = AnswerListSerializer(queryset, many=True)
         return Response(serializer.data)
