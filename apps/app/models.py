@@ -17,6 +17,7 @@ class Question(models.Model):
 class Answer(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
     content = models.CharField(max_length=512)
     year = models.IntegerField(null=True, blank=True)
 
