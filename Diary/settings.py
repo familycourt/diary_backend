@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'apps.authentication',
-    'apps.app'
+    'apps.diary',
+    'apps.qna',
 ]
 
 REST_FRAMEWORK = {

@@ -1,19 +1,13 @@
 from rest_framework.views import APIView
-from rest_framework.generics import (CreateAPIView,
-                                     GenericAPIView,
-                                     RetrieveAPIView,
-                                     ListCreateAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
 from .serializers import (
     AnswerSerializer,
     AnswerListSerializer,
-    DiarySerializer,
-    DiaryWriteSerializer,
     QuestionSerializer)
-from .models import Diary, Question, Answer, Comment
+from .models import Question, Answer, Comment
 
 
 def get_question_object(date):
@@ -28,10 +22,6 @@ def get_question_object(date):
     except Question.DoesNotExist:
         raise ParseError('Question with given date does not exists')
     return question
-
-
-class DiaryCreateAPIView(CreateAPIView):
-    serializer_class = DiaryWriteSerializer
 
 
 class QuestionRetrieveAPIView(APIView):
