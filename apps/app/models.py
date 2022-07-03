@@ -9,7 +9,6 @@ class Diary(models.Model):
 
 
 class Question(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     content = models.CharField(max_length=256)
     month = models.IntegerField(null=True, blank=True)
     day = models.IntegerField(null=True, blank=True)
