@@ -57,10 +57,13 @@ class CommentAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         try:
-            answer = Answer.objects.get(id=self.request.query_params['answer'])
+            answer = Answer.objects.get(
+                id=int(self.request.query_params['answer']))
             queryset = Comment.objects.filter(answer=answer)
         except KeyError:
             raise ParseError('Answer id is not given')
+        except ValueError:
+            raise ParseError('Answer id should be in decimal format')
         except Answer.DoesNotExist:
             raise ParseError('Answer with given id does not exists')
         if answer.diary not in self.request.user.diaries.all():
