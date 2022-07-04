@@ -6,7 +6,6 @@ from rest_framework.exceptions import ParseError, ValidationError
 
 from .serializers import (
     AnswerSerializer,
-    AnswerListSerializer,
     CommentSerializer,
     QuestionSerializer)
 from .models import Question, Answer, Comment
@@ -59,7 +58,6 @@ class CommentAPIView(ListCreateAPIView):
         try:
             answer = Answer.objects.get(
                 id=int(self.request.query_params['answer']))
-            queryset = Comment.objects.filter(answer=answer)
         except KeyError:
             raise ParseError('Answer id is not given')
         except ValueError:
@@ -69,4 +67,4 @@ class CommentAPIView(ListCreateAPIView):
         if answer.diary not in self.request.user.diaries.all():
             raise ValidationError(
                 'This user is not allowed to read from this diary')
-        return queryset
+        return Comment.objects.filter(answer=answer)
